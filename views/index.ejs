@@ -1,5 +1,109 @@
+<!DOCTYPE html>
 <html>
-<body>
-    <h2>Hi</h2>
-</body>
+    <head>
+        <title>Game Matcher</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="This website matches users with others on the most popular games">
+        <meta name="keywords" content="league, league of legends">
+        <meta name="author" content="Minho Cho, Jun Young Jang">
+        <meta name="viewport" content="width=device-width, initial-scale-1.0">
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <nav>
+            <div class="logo">
+                <img src="#">
+                <h1>Game Matcher</h1>
+            </div>
+            <div>
+                <ul>
+                    <li><a href="#">League of Legends</a></li>
+                    <li><a href="#">Diablo</a></li>
+                    <li><a href="#">Maplestory</a></li>
+                    <li><a href="#">Overwatch</a></li>
+                </ul>
+            </div>
+            <div class="search">
+                <input type="text" placeholder="Search">
+            </div>
+        </nav>
+        <main>
+        <!-- Temporary Middle Alignment -->
+        <center>   
+            <form>
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username"><br>
+            </form>
+            <form>
+                <br />
+                <label for="discord">Discord</label>
+                <input type="checkbox" id="discord" name="discord" value="discordYes">
+                <br />
+                <br />
+                <!-- Add audio tag so that it plays sound when submit is pressed -->
+                <input type="submit" value="Submit" id="findUser">
+            </form>
+        </center>
+        </main>
+        <footer>
+            <br />
+            <center>&copy; Suji 2021<br />
+                <a href="#">Terms of Service</a>
+            </center>
+            <br />
+        </footer>
+    </body>
+
+    <script>
+        const findUser   = document.getElementById('findUser');
+        const discord    = document.getElementById('discord');
+        
+        let discordCheck = false;
+
+        discord.addEventListener('change', async (e) => {   
+            discordCheck = !discordCheck;
+            console.log(discordCheck);
+        });
+
+        findUser.addEventListener('click' , async (e) => {
+            e.preventDefault();
+            const res = await send_nickname_to_server("참치라능");
+            if (res.status == 200 || res.status == 201) {
+                await create_cookie_username();
+            }
+        });
+
+        const send_nickname_to_server = async (nickname) => {
+            const data = {'nickname': nickname};
+            console.log(data);
+            const res  = await fetch('/riot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            if (res.status == 200 || res.status == 201) return res;
+
+            return undefined;
+        }
+
+        const create_cookie_username = async () => {
+            const username = document.getElementById('username').value;
+            console.log(username);
+            const data     = {'username': username, 'discord': discordCheck};
+            const res      = await fetch('/user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (res.status == 200 || res.status == 201) return res;
+
+            return undefined;
+        }
+
+    </script>
 </html>
