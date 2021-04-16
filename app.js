@@ -4,11 +4,11 @@ const mongoose     = require('mongoose');
 const morgan       = require('morgan');
 const bodyParser   = require('body-parser');
 const cors         = require('cors');
-const configDB     = require('./config/database');
+// const configDB     = require('./config/database');
 const cookieParser = require('cookie-parser');
 
 const port = process.env.PORT || 3000;
-const db   = mongoose.connect(configDB.url);
+const db   = mongoose.connect(process.env.MONGODB_URL);
 
 const app = express();
 
